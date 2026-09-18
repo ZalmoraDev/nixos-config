@@ -26,6 +26,7 @@ alias nano='nano -ET4 -i'
 
 # nixos
 alias nrs='sudo nixos-rebuild switch'
+alias nru='sudo nixos-rebuild switch --upgrade'
 alias cdn='cd /etc/nixos'
 
 # ls

@@ -1,5 +1,16 @@
-# Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
+# NixOS/Home Manager option types:
+# - Config-generating:
+#     serializes a Nix value into the app's own config
+#     syntax. Breaks on syntax changes; fights apps that self-write config.
+#
+# - Format-agnostic:
+#     packages, env vars, files, toggles. Doesn't touch
+#     the app's config syntax at all.
+#
+# This config avoids using config-generating options,
+# I find them to be problematic as they wrap config files,
+# adding an unneeded middleman between config being written and being read,
+# which adds extra complexity and points of breakage
 
 { config, pkgs, ... }:
 let
@@ -12,26 +23,32 @@ in
       (import "${home-manager}/nixos")
     ];
 
+
   # Set ownership of /etc/nixos to 'users' group, no sudo needed
   system.activationScripts.nixosConfigOwnership = {
     text = ''
-      chgrp -R users /etc/nixos
+      chown -R sv:users /etc/nixos
       chmod -R g+rwx /etc/nixos
     '';
   };
-
-  home-manager.useUserPackages = true;
-  home-manager.useGlobalPkgs = true;
-  home-manager.users.sv = import ./home.nix;
 
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
 
+
+
+
+  home-manager.useUserPackages = true;
+  home-manager.useGlobalPkgs = true;
+  home-manager.backupFileExtension = "backup";
+  home-manager.users.sv = import ./home.nix;
+
+
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.systemd-boot.configurationLimit = 5;  
+  boot.loader.systemd-boot.configurationLimit = 5;  # ESP is 260MiB, limit to 5 nixos generations
 
 
   # GPU Support
@@ -53,7 +70,11 @@ in
     extraGroups = [ "wheel" "networkmanager" ];
     packages = with pkgs; [];
   };
-    
+
+
+
+
+
   # Enable networking & bluetooth
   networking.networkmanager.enable = true;
   hardware.bluetooth = {
@@ -67,19 +88,38 @@ in
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
 
+
+
+
+
   # TODO: Figure out how to have home-manager 'own' /etc\ folders
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
+    autoNumlock = true;
   };
+
+  programs.uwsm.enable = true;
+  programs.xwayland.enable = true;
 
   programs.hyprland = {
     enable = true;
-    withUWSM = true;
-    xwayland.enable = false;
+    withUWSM = true; # Universal Wayland Session Manager, enables systemd integration
+    xwayland.enable = true;
   };
 
-  programs.xwayland.enable = true;
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+
+
+
+
+
+
+
+
+
+
 
   services.udisks2.enable = true; # Used by Dolphin to show mounted devices
 
@@ -138,11 +178,12 @@ in
     krita                   # 2026-09-08 | Digital art tool
 
     libreoffice             # 2026-09-08 | Office application suite
-    lshw                    # 2026-09-08 | list hardware info
+    lshw                    # 2026-09-08 | list hardware info, lsusb & lspci
 
     ###########################################################################
     # MNOP
     nomacs                  # 2026-09-08 | image viewer
+    numlockx                # 2026-09-18 | set numlock on by default
 
     obsidian                # 2026-09-08 | Note taking app
     obs-studio              # 2026-09-08 | Screenrecording
@@ -153,7 +194,7 @@ in
     pciutils                # 2026-09-08 | lsusb command for USB devices
     playerctl               # 2026-09-08 | Used by hyprland to control MPRIS-enabled media (spotify pause/resume)
     proton-vpn-cli          # 2026-09-08 | VPN client
-    #pureref                # 2026-09-08 | imageboard for art references bugs out
+    #pureref                 # 2026-09-08 | imageboard for art references bugs out
     python3                 # 2026-09-08 | Python interpreter
 
     ###########################################################################
@@ -178,21 +219,28 @@ in
     vlc                     # 2026-09-08 | VLC media player
 
     waybar                  # 2026-09-08 | Wayland taskbar
-    #wget                   # 2026-09-08 | CLI HTTPS/SFTP downloading
+    #wget                    # 2026-09-08 | CLI HTTPS/SFTP downloading
     wl-clipboard            # 2026-09-08 | Command-line copy/paste util (used by scripts, like whisper STT)
     wshowkeys               # 2026-09-08 | Keyboard input UI display
 
     xnconvert               # 2026-09-08 | Bulk image converter
 
-    #zen                    # 2026-09-08 | Privacy centric firefox-based webbrowser
+    #zen                     # 2026-09-08 | Privacy centric firefox-based webbrowser
 
     ###################################################################################################################
     # Theming & Icons
-
     adwaita-icon-theme                    # 2026-09-10 | GNOME Adwaita cursor theme
 
-    kdePackages.kdegraphics-thumbnailers  # 2026-09-10 | More Dolphin file previews (blender)
-    kdePackages.kio-extras                # 2026-09-11 | More Dolphin file previews (blender)
+    qt6Packages.qt6ct                     # 2026-09-13 | QT Themeing
+    qt6.qtwayland # NO IDEA
+
+
+    kdePackages.breeze
+    kdePackages.breeze-icons
+    kdePackages.qqc2-desktop-style
+
+    kdePackages.kdegraphics-thumbnailers  # 2026-09-10 | More Dolphin file previews ()
+    kdePackages.kio-extras                # 2026-09-11 | More Dolphin file previews ()
   ];
 
   fonts.packages = with pkgs; [
@@ -201,17 +249,9 @@ in
     noto-fonts
   ];
 
-#   programs.dconf.enable = true;
 
-  environment.variables = {
-    QT_QPA_PLATFORMTHEME = "kde";
-  };
-
-  # Works only barely
-  environment.etc."xdg/kdeglobals".text = ''
-    [General]
-    ColorScheme=BreezeDark
-  '';
+  #environment.variables.QT_QPA_PLATFORMTHEME = "qt6ct";
+  programs.dconf.enable = true; # GNOME / GTK theme support
 
 
 
@@ -268,6 +308,9 @@ in
   # accidentally delete configuration.nix.
   # system.copySystemConfiguration = true;
 
+
+
+  # ###################################################################################################################
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
   #

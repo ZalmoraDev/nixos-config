@@ -17,3 +17,5 @@ if [ -z "$SSH_AUTH_SOCK" ] ; then
     ssh-add ~/.ssh/sv-github
     #ssh-add ~/.ssh/SV-VPS
 fi
+
+numlockx on

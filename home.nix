@@ -8,32 +8,87 @@ in
   home.homeDirectory = "/home/sv";
   home.stateVersion = "26.05";
 
-#   programs.bash = {
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true;
+    package = pkgs.adwaita-icon-theme;
+    name = "Adwaita";
+    size = 24;
+  };
+
+  home.packages = [
+    pkgs.kdePackages.breeze
+  ];
+
+  gtk = {
+    enable = true;
+    colorScheme = "dark";
+
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+  };
+
+  qt = {
+    enable = true;
+    platformTheme.name = "kde";
+    style.name = "breeze";
+  };
+
+  home.file.".config/kdeglobals".source =
+    "${pkgs.kdePackages.breeze}/share/color-schemes/BreezeDark.colors";
+
+  home.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+  };
+
+#   gtk = {
 #     enable = true;
-#     shellAliases = {
-#       btw = "echo I use nixos btw";
-#
-#       nrs = "sudo nixos-rebuild switch";
-#       nc  = "sudo nano /etc/nixos/configuration.nix";
-#       nh  = "sudo nano /etc/nixos/home.nix";
+#     theme = {
+#       name = "Adwaita-dark";
+#       package = pkgs.adwaita-icon-theme;
 #     };
-#     bashrcExtra = ''
-#       eval "$(starship init bash)";
-#     '';
+#   };
+#
+#   dconf.settings."org/gnome/desktop/interface" = {
+#     color-scheme = "prefer-dark";
+#     gtk-theme = "Adwaita-dark";
+#   };
+#
+#   qt = {
+#     enable = true;
+#     platformTheme.name = "qt6ct";
+#     style.name = "kvantum";
+#
+#     kvantum = {
+#       enable = true;
+#       themes = [ pkgs.arc-kde-theme ];       # provides the ArcDark theme files
+#       settings.General.theme = "ArcDark";    # tells Kvantum which installed theme to use
+#     };
+#   };
+#
+#   home.sessionVariables = {
+#     NIXOS_OZONE_WL = "1";
+#     GTK_THEME = "Adwaita:dark";
+#     QT_STYLE_OVERRIDE = "kvantum";
 #   };
 
 
   # Commented lines contain sentsitive data, figure out how to .gitignore a setup for this
+  # ABCD
   home.file.".bashrc".source = dotfiles + "/bash/.bashrc";                                              # 2026-09-10 | bash
   home.file.".bash_profile".source = dotfiles + "/bash/.bash_profile";                                  # 2026-09-10 | bash
   home.file.".bash_logout".source = dotfiles + "/bash/.bash_logout";                                    # 2026-09-12 | bash
 
-  #home.file.".config/blender".source = dotfiles + "/blender/.config/blender";                           # 2026-09-12 | blender
+  #home.file.".config/blender".source = dotfiles + "/blender/.config/blender";                           # 2026-09-12 | blender, contains project paths & search histories
 
   home.file.".clang-format".source = dotfiles + "/clang/.clang-format";                                 # 2026-09-10 | clangformat
 
   home.file.".config/dolphinrc".source = dotfiles + "/dolphin/.config/dolphinrc";                       # 2026-09-12 | dolphin
 
+  ###############################################################################################################################
+  # EFGH
   home.file.".config/fastfetch".source = dotfiles + "/fastfetch/.config/fastfetch";                     # 2026-09-10 | fastfetch
 
   home.file.".config/ghostty".source = dotfiles + "/ghostty/.config/ghostty";                           # 2026-09-10 | ghostty
@@ -42,13 +97,21 @@ in
 
   home.file.".config/hypr".source = dotfiles + "/hypr/.config/hypr";                                    # 2026-09-10 | hyprland
 
+
+  ###############################################################################################################################
+  # IJKL
+
+  ###############################################################################################################################
+  # MNOP
   home.file.".config/mimeapps.list".source = dotfiles + "/mimeapps/.config/mimeapps.list";              # 2026-09-10 | mimemapps
 
   home.file.".nanorc".source = dotfiles + "/nano/.nanorc";                                              # 2026-09-12 | nano
   home.file.".local/share/nano".source = dotfiles + "/nano/.local/share/nano";                          # 2026-09-12 | nano
 
-  #home.file.".config/PureRef/PureRef.ini".source = dotfiles + "/pureref/.config/PureRef/PureRef.ini";   # 2026-09-12 | pureref
+  #home.file.".config/PureRef/PureRef.ini".source = dotfiles + "/pureref/.config/PureRef/PureRef.ini";   # 2026-09-12 | pureref, contains project paths & search histories
 
+  ###############################################################################################################################
+  # QRST
   home.file.".config/rofi".source = dotfiles + "/rofi/.config/rofi";                                    # 2026-09-10 | rofi config
   home.file.".local/share/rofi".source = dotfiles + "/rofi/.local/share/rofi";                          # 2026-09-10 | rofi themes
 
@@ -56,11 +119,9 @@ in
 
   home.file.".tmux.conf".source = dotfiles + "/tmux/.tmux.conf";                                        # 2026-09-10 | tmux
 
+  ###############################################################################################################################
+  # UVWXYZ
   home.file.".config/waybar".source = dotfiles + "/waybar/.config/waybar";                              # 2026-09-10 | waybar
 
-  #home.file.".ssh".source = dotfiles + "/ssh/.ssh";                                                     # 2026-09-12 | ssh
-
-  
-  home.packages = with pkgs; [
-  ];
+  #home.file.".ssh".source = dotfiles + "/ssh/.ssh";                                                     # 2026-09-12 | ssh, contains private SSH keys
 }
