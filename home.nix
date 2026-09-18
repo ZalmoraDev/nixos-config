@@ -11,23 +11,10 @@ in
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;
+
     package = pkgs.adwaita-icon-theme;
     name = "Adwaita";
     size = 24;
-  };
-
-  home.packages = [
-    pkgs.kdePackages.breeze
-  ];
-
-  gtk = {
-    enable = true;
-    colorScheme = "dark";
-
-    theme = {
-      name = "Adwaita-dark";
-      package = pkgs.gnome-themes-extra;
-    };
   };
 
   qt = {
@@ -35,45 +22,6 @@ in
     platformTheme.name = "kde";
     style.name = "breeze";
   };
-
-  home.file.".config/kdeglobals".source =
-    "${pkgs.kdePackages.breeze}/share/color-schemes/BreezeDark.colors";
-
-  home.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-  };
-
-#   gtk = {
-#     enable = true;
-#     theme = {
-#       name = "Adwaita-dark";
-#       package = pkgs.adwaita-icon-theme;
-#     };
-#   };
-#
-#   dconf.settings."org/gnome/desktop/interface" = {
-#     color-scheme = "prefer-dark";
-#     gtk-theme = "Adwaita-dark";
-#   };
-#
-#   qt = {
-#     enable = true;
-#     platformTheme.name = "qt6ct";
-#     style.name = "kvantum";
-#
-#     kvantum = {
-#       enable = true;
-#       themes = [ pkgs.arc-kde-theme ];       # provides the ArcDark theme files
-#       settings.General.theme = "ArcDark";    # tells Kvantum which installed theme to use
-#     };
-#   };
-#
-#   home.sessionVariables = {
-#     NIXOS_OZONE_WL = "1";
-#     GTK_THEME = "Adwaita:dark";
-#     QT_STYLE_OVERRIDE = "kvantum";
-#   };
-
 
   # Commented lines contain sentsitive data, figure out how to .gitignore a setup for this
   # ABCD
@@ -100,6 +48,7 @@ in
 
   ###############################################################################################################################
   # IJKL
+  home.file.".config/kdeglobals".source = dotfiles + "/kdeglobals/.config/kdeglobals";                  # 2026-09-18 | kde theming (dark)
 
   ###############################################################################################################################
   # MNOP

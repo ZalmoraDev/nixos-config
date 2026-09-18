@@ -121,7 +121,7 @@ in
 
 
 
-  services.udisks2.enable = true; # Used by Dolphin to show mounted devices
+  services.udisks2.enable = true; # Required by Dolphin to show mounted devices
 
   environment.systemPackages = with pkgs; [
     # ABCD
@@ -194,7 +194,7 @@ in
     pciutils                # 2026-09-08 | lsusb command for USB devices
     playerctl               # 2026-09-08 | Used by hyprland to control MPRIS-enabled media (spotify pause/resume)
     proton-vpn-cli          # 2026-09-08 | VPN client
-    #pureref                 # 2026-09-08 | imageboard for art references bugs out
+    #pureref                 # 2026-09-08 | imageboard for art references (bugs out)
     python3                 # 2026-09-08 | Python interpreter
 
     ###########################################################################
@@ -219,28 +219,12 @@ in
     vlc                     # 2026-09-08 | VLC media player
 
     waybar                  # 2026-09-08 | Wayland taskbar
-    #wget                    # 2026-09-08 | CLI HTTPS/SFTP downloading
     wl-clipboard            # 2026-09-08 | Command-line copy/paste util (used by scripts, like whisper STT)
     wshowkeys               # 2026-09-08 | Keyboard input UI display
 
     xnconvert               # 2026-09-08 | Bulk image converter
 
     #zen                     # 2026-09-08 | Privacy centric firefox-based webbrowser
-
-    ###################################################################################################################
-    # Theming & Icons
-    adwaita-icon-theme                    # 2026-09-10 | GNOME Adwaita cursor theme
-
-    qt6Packages.qt6ct                     # 2026-09-13 | QT Themeing
-    qt6.qtwayland # NO IDEA
-
-
-    kdePackages.breeze
-    kdePackages.breeze-icons
-    kdePackages.qqc2-desktop-style
-
-    kdePackages.kdegraphics-thumbnailers  # 2026-09-10 | More Dolphin file previews ()
-    kdePackages.kio-extras                # 2026-09-11 | More Dolphin file previews ()
   ];
 
   fonts.packages = with pkgs; [
@@ -250,8 +234,6 @@ in
   ];
 
 
-  #environment.variables.QT_QPA_PLATFORMTHEME = "qt6ct";
-  programs.dconf.enable = true; # GNOME / GTK theme support
 
 
 
