@@ -58,6 +58,7 @@ in
 
   ###############################################################################################################################
   # IJKL
+  #home.file.".config/kdeglobals".source = "${pkgs.kdePackages.breeze}/share/color-schemes/BreezeDark.colors";
   home.file.".config/kdeglobals".source = dotfiles + "/kdeglobals/.config/kdeglobals";                  # 2026-09-18 | kde theming (dark)
 
   ###############################################################################################################################
