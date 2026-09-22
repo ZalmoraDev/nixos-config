@@ -234,6 +234,7 @@ in
     nerd-fonts.jetbrains-mono
     noto-fonts-color-emoji
     noto-fonts
+    font-awesome
   ];
 
 

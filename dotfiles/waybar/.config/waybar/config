@@ -75,7 +75,7 @@
         "max-length": 50,
         "tooltip": false,
         "on-scroll-up": "playerctl -p spotify position 10+",
-        "on-scroll-down": "playerctl -p spotify position 10-",
+        "on-scroll-down": "playerctl -p spotify position 10-"
     },
     
     
