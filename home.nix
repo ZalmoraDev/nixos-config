@@ -33,6 +33,48 @@ in
     style.name = "breeze";
   };
 
+  dconf.enable = true;
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      text-scaling-factor = 1.0;
+    };
+  };
+
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "audio/mp3" = "vlc.desktop";
+      "audio/wav" = "vlc.desktop";
+      "audio/ogg" = "vlc.desktop";
+
+      "image/gif" = "org.nomacs.ImageLounge.desktop";
+      "image/jpeg" = "org.nomacs.ImageLounge.desktop";
+      "image/jpg" = "org.nomacs.ImageLounge.desktop";
+      "image/png" = "org.nomacs.ImageLounge.desktop";
+      "image/webp" = "org.nomacs.ImageLounge.desktop";
+
+      "x-scheme-handler/http" = "brave-browser.desktop";
+      "x-scheme-handler/https" = "brave-browser.desktop";
+      "x-scheme-handler/about" = "brave-browser.desktop";
+      "x-scheme-handler/unknown" = "brave-browser.desktop";
+      "text/html" = "brave-browser.desktop";
+
+      "text/plain" = "org.kde.kate.desktop";
+      "text/xml" = "org.kde.kate.desktop";
+      "application/json" = "org.kde.kate.desktop";
+      "application/jsonc" = "org.kde.kate.desktop";
+      "application/octet-stream" = "org.kde.kate.desktop";
+      "application/x-zerosize" = "org.kde.kate.desktop";
+      "inode/x-empty" = "org.kde.kate.desktop";
+
+      "application/pdf" = "okularApplication_pdf.desktop";
+      "application/pur" = "PureRef-2.0.3_x64.Appimage.desktop";
+
+      "x-scheme-handler/gitkraken" = "GitKraken.desktop";
+      "x-scheme-handler/jetbrains" = "jetbrainsd.desktop";
+    };
+  };
+
   # Commented lines contain sentsitive data, figure out how to .gitignore a setup for this
   # ABCD
   home.file.".bashrc".source = dotfiles + "/bash/.bashrc";                                              # 2026-09-10 | bash
@@ -63,7 +105,7 @@ in
 
   ###############################################################################################################################
   # MNOP
-  home.file.".config/mimeapps.list".source = dotfiles + "/mimeapps/.config/mimeapps.list";              # 2026-09-10 | mimemapps
+  #home.file.".config/mimeapps.list".source = dotfiles + "/mimeapps/.config/mimeapps.list";              # 2026-09-10 | mimemapps
 
   home.file.".nanorc".source = dotfiles + "/nano/.nanorc";                                              # 2026-09-12 | nano
   home.file.".local/share/nano".source = dotfiles + "/nano/.local/share/nano";                          # 2026-09-12 | nano
