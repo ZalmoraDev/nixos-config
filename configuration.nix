@@ -199,7 +199,8 @@ in
 
     libreoffice               # 2026-09-08 | Office application suite
     lshw                      # 2026-09-08 | list hardware info, lsusb & lspci
-
+    lxmenu-data               # 2026-10-04 | lxde data, needed for mimeapps associations (few KB of data, menu XML + directory files)
+    
     ###########################################################################
     # MNOP
     nodejs                    # 2026-09-24 | JS execution outside of browser engines
@@ -214,6 +215,7 @@ in
 
     pavucontrol               # 2026-09-08 | PulseAudio volume control
     pciutils                  # 2026-09-08 | lsusb command for USB devices
+    phpPackages.composer      # 2026-10-04 | Dependency Manager for PHP
     pipewire                  # 2026-09-24 | Linux audio
     playerctl                 # 2026-09-08 | Used by hyprland to control MPRIS-enabled media (spotify pause/resume)
     pnpm                      # 2026-09-24 | parallel npm
@@ -279,7 +281,7 @@ in
     LC_NUMERIC = "nl_NL.UTF-8";
     LC_PAPER = "nl_NL.UTF-8";
     LC_TELEPHONE = "nl_NL.UTF-8";
-    LC_TIME = "nl_NL.UTF-8";
+    LC_TIME = "en_US.UTF-8";
   };
 
   # Configure keymap in X11

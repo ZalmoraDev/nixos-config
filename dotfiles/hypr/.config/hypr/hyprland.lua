@@ -14,6 +14,7 @@ https://configure.zsa.io/moonlander/layouts/0N5XK/yoXWm0/0
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
+hl.env("XDG_MENU_PREFIX", "lxde-") -- Set XDG association file to match with lxde menu entry (few KB of data)
 
 
 
