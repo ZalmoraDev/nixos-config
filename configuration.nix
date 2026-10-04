@@ -194,13 +194,14 @@ in
     kdePackages.kimageformats # 2026-09-24 | Image thumbnails (webp, tiff...)
     kdePackages.kio-extras    # 2026-09-24 | broader KIO previews/protocols, general polish
     kdePackages.okular        # 2026-09-08 | PDF viewer
+    kdePackages.qtimageformats # 2026-10-04 | KDE Dolphin previews: WebP, TIFF, TGA, MNG
     kitty                     # 2026-09-08 | Terminal emulator (backup for Ghostty)
     krita                     # 2026-09-08 | Digital art tool
 
     libreoffice               # 2026-09-08 | Office application suite
     lshw                      # 2026-09-08 | list hardware info, lsusb & lspci
     lxmenu-data               # 2026-10-04 | lxde data, needed for mimeapps associations (few KB of data, menu XML + directory files)
-    
+
     ###########################################################################
     # MNOP
     nodejs                    # 2026-09-24 | JS execution outside of browser engines
@@ -252,6 +253,12 @@ in
 
     #zen                       # 2026-09-08 | Privacy centric firefox-based webbrowser
   ];
+
+  fonts.enableDefaultPackages = true;   # DejaVu, Liberation, etc.
+  fonts.fontconfig.defaultFonts = {
+    sansSerif = [ "Noto Sans" ];
+    monospace = [ "JetBrainsMono Nerd Font" ];
+  };
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono

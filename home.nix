@@ -25,11 +25,18 @@ in
       name = "Adwaita-dark";
       package = pkgs.gnome-themes-extra;
     };
+
+    font = {
+      name = "Noto Sans";
+      size = 10;
+      package = pkgs.noto-fonts;
+    };
   };
 
   qt = {
     enable = true;
     platformTheme.name = "kde";
+    #platformTheme.name = "qt5ct";
     style.name = "breeze";
   };
 
@@ -64,6 +71,7 @@ in
       "application/json" = "org.kde.kate.desktop";
       "application/jsonc" = "org.kde.kate.desktop";
       "application/octet-stream" = "org.kde.kate.desktop";
+
       "application/x-zerosize" = "org.kde.kate.desktop";
       "inode/x-empty" = "org.kde.kate.desktop";
 
