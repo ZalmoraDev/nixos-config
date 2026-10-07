@@ -76,7 +76,7 @@ in
       "inode/x-empty" = "org.kde.kate.desktop";
 
       "application/pdf" = "okularApplication_pdf.desktop";
-      "application/pur" = "PureRef-2.0.3_x64.Appimage.desktop";
+      #"application/pur" = "PureRef-2.0.3_x64.Appimage.desktop";
 
       "x-scheme-handler/gitkraken" = "GitKraken.desktop";
       "x-scheme-handler/jetbrains" = "jetbrainsd.desktop";

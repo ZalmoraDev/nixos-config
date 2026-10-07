@@ -23,8 +23,20 @@ in
       (import "${home-manager}/nixos")
     ];
 
+  system.stateVersion = "26.05"; # Do NOT change this value
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Set ownership of /etc/nixos to 'users' group, no sudo needed
+  nixpkgs.config.allowUnfree = true;
+  programs.nix-ld.enable = true; # Allow running non-nix packaged dynamic libraries
+  # system.copySystemConfiguration = true;
+
+  # Home manager
+  home-manager.useUserPackages = true;
+  home-manager.useGlobalPkgs = true;
+  home-manager.backupFileExtension = "backup";
+  home-manager.users.sv = import ./home.nix;
+
+  # WORKAROUND: Set ownership of /etc/nixos to 'users' group, sudo not needed
   system.activationScripts.nixosConfigOwnership = {
     text = ''
       chown -R sv:users /etc/nixos
@@ -32,19 +44,42 @@ in
     '';
   };
 
-  nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  home-manager.useUserPackages = true;
-  home-manager.useGlobalPkgs = true;
-  home-manager.backupFileExtension = "backup";
-  home-manager.users.sv = import ./home.nix;
+  ####################################################################################################################
 
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot.configurationLimit = 5;  # ESP is 260MiB, limit to 5 nixos generations
+
+  # TODO: Figure out how to have home-manager 'own' /etc\ folders
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+    autoNumlock = true; # TODO: doesnt work
+  };
+
+  # Configure keymap in X11
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
+  };
+
+  programs.uwsm.enable = true;
+  programs.xwayland.enable = true;
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true; # Universal Wayland Session Manager, enables systemd integration
+    xwayland.enable = true;
+  };
+
+  # TODO: Verify is needed
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+
+
+  ####################################################################################################################
 
 
   # GPU Support
@@ -62,6 +97,9 @@ in
   services.xserver.videoDrivers = ["nvidia"];
 
 
+  ####################################################################################################################
+
+
   # User & System
   networking.hostName = "helios";
   users.users."sv" = {
@@ -71,7 +109,7 @@ in
   };
 
 
-
+  ####################################################################################################################
 
 
   # Enable networking & bluetooth
@@ -86,56 +124,25 @@ in
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
+  services.openssh.enable = true;
 
-
-
-
-
-  # TODO: Figure out how to have home-manager 'own' /etc\ folders
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = true;
-    autoNumlock = true;
-  };
-
-  programs.uwsm.enable = true;
-  programs.xwayland.enable = true;
-
-  programs.hyprland = {
-    enable = true;
-    withUWSM = true; # Universal Wayland Session Manager, enables systemd integration
-    xwayland.enable = true;
-  };
-
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-
-
-
-
-
-
-
-
-
-
-
-  services.udisks2.enable = true; # Required by Dolphin to show mounted devices
-
-
-  virtualisation.docker.enable = true;
+  # Open ports in the firewall.
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
+  # Or disable the firewall altogether.
+  # networking.firewall.enable = false;
 
   services.pipewire = {
     enable = true;
     pulse.enable = true; # PulseAudio support, needed for Kate among others
   };
 
+  services.udisks2.enable = true; # Required by Dolphin to show mounted devices
+  virtualisation.docker.enable = true; # Required to enable docker service
 
-  environment.pathsToLink = [
-    "/share/applications"
-    "/share/mime"
-    "/share/icons"
-  ];
+
+  ####################################################################################################################
+
 
   environment.systemPackages = with pkgs; [
     # ABCD
@@ -221,7 +228,7 @@ in
     playerctl                 # 2026-09-08 | Used by hyprland to control MPRIS-enabled media (spotify pause/resume)
     pnpm                      # 2026-09-24 | parallel npm
     proton-vpn-cli            # 2026-09-08 | VPN client
-    #pureref                   # 2026-09-08 | imageboard for art references (bugs out)
+    #pureref                   # 2026-09-08 | imageboard for art references
     python3                   # 2026-09-08 | Python interpreter
 
     ###########################################################################
@@ -254,12 +261,14 @@ in
     #zen                       # 2026-09-08 | Privacy centric firefox-based webbrowser
   ];
 
+  # TODO: Place in home.nix?
   fonts.enableDefaultPackages = true;   # DejaVu, Liberation, etc.
   fonts.fontconfig.defaultFonts = {
     sansSerif = [ "Noto Sans" ];
     monospace = [ "JetBrainsMono Nerd Font" ];
   };
 
+  # TODO: Place in home.nix?
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     noto-fonts-color-emoji
@@ -267,12 +276,14 @@ in
     font-awesome
   ];
 
+  # TODO: Verify if needed, place in home.nix if needed
+  environment.pathsToLink = [
+    "/share/applications"
+    "/share/mime"
+    "/share/icons"
+  ];
 
-
-
-
-
-
+  # TODO: Place all of this also in home.nix?
   # Set your time zone.
   time.timeZone = "Europe/Amsterdam";
 
@@ -290,59 +301,4 @@ in
     LC_TELEPHONE = "nl_NL.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
-
-
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
-
-
-
-  # ###################################################################################################################
-  # This option defines the first version of NixOS you have installed on this particular machine,
-  # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
-  #
-  # Most users should NEVER change this value after the initial install, for any reason,
-  # even if you've upgraded your system to a new NixOS release.
-  #
-  # This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
-  # so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
-  # to actually do that.
-  #
-  # This value being lower than the current NixOS release does NOT mean your system is
-  # out of date, out of support, or vulnerable.
-  #
-  # Do NOT change this value unless you have manually inspected all the changes it would make to your configuration,
-  # and migrated your data accordingly.
-  #
-  # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "26.05"; # Did you read the comment?
 }

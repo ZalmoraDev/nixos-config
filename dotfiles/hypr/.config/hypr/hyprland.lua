@@ -14,6 +14,7 @@ https://configure.zsa.io/moonlander/layouts/0N5XK/yoXWm0/0
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
+
 hl.env("XDG_MENU_PREFIX", "lxde-") -- Set XDG association file to match with lxde menu entry (few KB of data)
 
 
@@ -67,6 +68,7 @@ hl.monitor({
 -- Lenovo - Internship
 hl.monitor({
     output   = "desc:Lenovo Group Limited P27h-20 V90CBDE4",
+    mode     = "2560x1440@59.95",
     position = "2048x1440",
     scale    = "1",
     cm       = "srgb",
@@ -74,11 +76,12 @@ hl.monitor({
 })
 -- LG - Internship
 hl.monitor({
-    output   = "desc:LG Electronics IPS235 Serial Number",
-    position = "4608x1440",
-    scale    = "1",
-    cm       = "srgb",
-    bitdepth = 8,
+    output    = "desc:LG Electronics IPS235 Serial Number",
+    mode      = "1920x1080@60.00",
+    position  = "4608x1440",
+    scale     = "1",
+    cm        = "srgb",
+    bitdepth  = 8,
     transform = 3 -- Right is up, Left is down
 })
 
@@ -106,12 +109,14 @@ local function apply_internship_workspaces()
 end
 
 hl.on("monitor.added", function(m)
-    if m.description:find("LG ULTRAGEAR", 1, true) then
+    if m.description:find("LG Electronics LG ULTRAGEAR 309MAHUDPQ89", 1, true) then
         apply_home_workspaces()
-    elseif m.description:find("Lenovo Group Limited P27h-20", 1, true) then
+    elseif m.description:find("Lenovo Group Limited P27h-20 V90CBDE4", 1, true) then
         apply_internship_workspaces()
     end
 end)
+
+
 
 -------------------
 ---- AUTOSTART ----
