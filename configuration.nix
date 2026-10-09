@@ -1,17 +1,5 @@
-# NixOS/Home Manager option types:
-# - Config-generating:
-#     serializes a Nix value into the app's own config
-#     syntax. Breaks on syntax changes; fights apps that self-write config.
-#
-# - Format-agnostic:
-#     packages, env vars, files, toggles. Doesn't touch
-#     the app's config syntax at all.
-#
-# This config avoids using config-generating options,
-# I find them to be problematic as they wrap config files,
-# adding an unneeded middleman between config being written and being read,
-# which adds extra complexity and points of breakage
-
+########################################################################################################################
+# region Imports
 { config, pkgs, ... }:
 let
   home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz";
@@ -23,6 +11,8 @@ in
       (import "${home-manager}/nixos")
     ];
 
+  ######################################################################################################################
+  # region NixOS config
   system.stateVersion = "26.05"; # Do NOT change this value
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -31,10 +21,12 @@ in
   # system.copySystemConfiguration = true;
 
   # Home manager
-  home-manager.useUserPackages = true;
-  home-manager.useGlobalPkgs = true;
-  home-manager.backupFileExtension = "backup";
-  home-manager.users.sv = import ./home.nix;
+  home-manager = {
+    users.sv = import ./home.nix;
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    backupFileExtension = "backup";
+  };
 
   # WORKAROUND: Set ownership of /etc/nixos to 'users' group, sudo not needed
   system.activationScripts.nixosConfigOwnership = {
@@ -45,10 +37,8 @@ in
   };
 
 
-  ####################################################################################################################
-
-
-  # Use the systemd-boot EFI boot loader.
+  ######################################################################################################################
+  # region systemdboot, sddm & hyprland
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot.configurationLimit = 5;  # ESP is 260MiB, limit to 5 nixos generations
@@ -79,28 +69,26 @@ in
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
 
 
-  ####################################################################################################################
+  ######################################################################################################################
+  # region GPU Support
+  hardware = {
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
 
-
-  # GPU Support
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = true;
-    #powerManagement.finegrained = true; # 30-series or higher
-    open = true;
-    nvidiaSettings = true;
+    nvidia = {
+      modesetting.enable = true;
+      powerManagement.enable = true;
+      #powerManagement.finegrained = true; # 30-series or higher
+      open = true;
+      nvidiaSettings = true;
+    };
   };
   services.xserver.videoDrivers = ["nvidia"];
 
-
-  ####################################################################################################################
-
-
-  # User & System
+  ######################################################################################################################
+  # region User & System
   networking.hostName = "helios";
   users.users."sv" = {
     isNormalUser = true;
@@ -109,10 +97,8 @@ in
   };
 
 
-  ####################################################################################################################
-
-
-  # Enable networking & bluetooth
+  ######################################################################################################################
+  # region Enable networking & bluetooth
   networking.networkmanager.enable = true;
   hardware.bluetooth = {
     enable = true;
@@ -141,9 +127,8 @@ in
   virtualisation.docker.enable = true; # Required to enable docker service
 
 
-  ####################################################################################################################
-
-
+  ######################################################################################################################
+  # region Packages
   environment.systemPackages = with pkgs; [
     # ABCD
     alsa-utils                # 2026-09-08 | provides `arecord` voice recording command, used by Whisper for STT
@@ -181,6 +166,7 @@ in
     hypridle                  # 2026-09-08 | Hyprland sleep
     hyprlock                  # 2026-09-08 | Hyprland screenlock
     hyprpaper                 # 2026-09-08 | Hyprland wallpaper
+    hyprpicker                # 2026-10-09 | Hyprland colorpicker
     hyprshot                  # 2026-09-08 | Hyprland screenshots
     hyprsunset                # 2026-09-08 | Hyprland bluelight/brightness adjustment
 
@@ -207,7 +193,7 @@ in
 
     libreoffice               # 2026-09-08 | Office application suite
     lshw                      # 2026-09-08 | list hardware info, lsusb & lspci
-    lxmenu-data               # 2026-10-04 | lxde data, needed for mimeapps associations (few KB of data, menu XML + directory files)
+    lxmenu-data               # 2026-10-04 | lxde data, needed for mimeapps associations (few KB, menu XML + directory files)
 
     ###########################################################################
     # MNOP
@@ -262,19 +248,24 @@ in
   ];
 
   # TODO: Place in home.nix?
-  fonts.enableDefaultPackages = true;   # DejaVu, Liberation, etc.
-  fonts.fontconfig.defaultFonts = {
-    sansSerif = [ "Noto Sans" ];
-    monospace = [ "JetBrainsMono Nerd Font" ];
+  fonts = {
+    enableDefaultPackages = true;   # DejaVu, Liberation, etc.
+
+    fontconfig.defaultFonts = {
+      sansSerif = [ "Noto Sans" ];
+      monospace = [ "JetBrainsMono Nerd Font" ];
+    };
+
+    packages = with pkgs; [
+      nerd-fonts.jetbrains-mono
+      noto-fonts-color-emoji
+      noto-fonts
+      font-awesome
+    ];
   };
 
-  # TODO: Place in home.nix?
-  fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-    noto-fonts-color-emoji
-    noto-fonts
-    font-awesome
-  ];
+
+
 
   # TODO: Verify if needed, place in home.nix if needed
   environment.pathsToLink = [

@@ -7,31 +7,66 @@ binds might seem unintuitive.
 I also still change keys & binds,
 so take that into consideration.
 
-ZSA Moonlander config (MAY BE OLD VERSION):
-https://configure.zsa.io/moonlander/layouts/0N5XK/yoXWm0/0
+ZSA Moonlander config:
+https://configure.zsa.io/moonlander/layouts/0N5XK/latest/0
 ]]
 
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
 
-hl.env("XDG_MENU_PREFIX", "lxde-") -- Set XDG association file to match with lxde menu entry (few KB of data)
+hl.env("XDG_MENU_PREFIX", "lxde-") -- Set XDG association to match with lxde- opposed to hyprland- menu entry (few KB of data)
 
 
 
--------------------------------
----- MONITORS & WORKSPACES ----
--------------------------------
+---------------------
+----  WORKSPACES ----
+---------------------
 
--- Home
+-- Laptop workspaces (Always 123)
+hl.workspace_rule({ workspace = "1", monitor = "desc:California Institute of Technology 0x1600", default = true })
+hl.workspace_rule({ workspace = "2", monitor = "desc:California Institute of Technology 0x1600", default = true })
+hl.workspace_rule({ workspace = "3", monitor = "desc:California Institute of Technology 0x1600", default = true })
+
+-- Home monitor setup
 -- 1) Laptop  16:10 1440p Bottom, Landscape secondary 123
 -- 2) LG      16:9  1440p Top,    Landscape PRIMARY   456
--- 3) Iiyama  9:16  1080p Right,  Portrait  tertiary  789
+-- 3) Iiyama  16:9  1080p Right,  Portrait  tertiary  789
+local function apply_home_workspaces()
+    hl.workspace_rule({ workspace = "4", monitor = "desc:LG Electronics LG ULTRAGEAR 309MAHUDPQ89", default = true })
+    hl.workspace_rule({ workspace = "5", monitor = "desc:LG Electronics LG ULTRAGEAR 309MAHUDPQ89", default = true })
+    hl.workspace_rule({ workspace = "6", monitor = "desc:LG Electronics LG ULTRAGEAR 309MAHUDPQ89", default = true })
+    hl.workspace_rule({ workspace = "7", monitor = "desc:Iiyama North America PL2466H 1177004102878", default = true })
+    hl.workspace_rule({ workspace = "8", monitor = "desc:Iiyama North America PL2466H 1177004102878", default = true })
+    hl.workspace_rule({ workspace = "9", monitor = "desc:Iiyama North America PL2466H 1177004102878", default = true })
+end
 
--- Internship
--- 1) Laptop  16:10 1440p Right,  Landscape secondary 123
+-- Internship monitor setup
+-- 1) Laptop  16:10 1440p Left,   Landscape secondary 123
 -- 2) Lenovo  16:9  1440p Center, Landscape PRIMARY   456
--- 3) LG      16:9  1080p Left,   Landscape tertiary  789
+-- 3) LG      16:9  1080p Right,  Portrait  tertiary   789
+local function apply_internship_workspaces()
+    hl.workspace_rule({ workspace = "4", monitor = "desc:Lenovo Group Limited P27h-20 V90CBDE4", default = true })
+    hl.workspace_rule({ workspace = "5", monitor = "desc:Lenovo Group Limited P27h-20 V90CBDE4", default = true })
+    hl.workspace_rule({ workspace = "6", monitor = "desc:Lenovo Group Limited P27h-20 V90CBDE4", default = true })
+    hl.workspace_rule({ workspace = "7", monitor = "desc:LG Electronics IPS235 Serial Number", default = true })
+    hl.workspace_rule({ workspace = "8", monitor = "desc:LG Electronics IPS235 Serial Number", default = true })
+    hl.workspace_rule({ workspace = "9", monitor = "desc:LG Electronics IPS235 Serial Number", default = true })
+end
+
+-- Select which workspaces to add based on setup location
+hl.on("monitor.added", function(m)
+    if m.description:find("LG Electronics LG ULTRAGEAR 309MAHUDPQ89", 1, true) then
+        apply_home_workspaces()
+    elseif m.description:find("Lenovo Group Limited P27h-20 V90CBDE4", 1, true) then
+        apply_internship_workspaces()
+    end
+end)
+
+------------------
+---- MONITORS ----
+------------------
+-- Use `hyprctl monitors`
 
 -- Laptop
 hl.monitor({
@@ -44,6 +79,7 @@ hl.monitor({
 })
 
 
+-- Home monitors --
 -- LG - Home
 hl.monitor({
     output   = "desc:LG Electronics LG ULTRAGEAR 309MAHUDPQ89",
@@ -65,6 +101,7 @@ hl.monitor({
 })
 
 
+-- Internship monitors --
 -- Lenovo - Internship
 hl.monitor({
     output   = "desc:Lenovo Group Limited P27h-20 V90CBDE4",
@@ -85,37 +122,6 @@ hl.monitor({
     transform = 3 -- Right is up, Left is down
 })
 
--- Laptop workspaces (Always)
-hl.workspace_rule({ workspace = "1", monitor = "desc:California Institute of Technology 0x1600", default = true })
-hl.workspace_rule({ workspace = "2", monitor = "desc:California Institute of Technology 0x1600", default = true })
-hl.workspace_rule({ workspace = "3", monitor = "desc:California Institute of Technology 0x1600", default = true })
-
-local function apply_home_workspaces()
-    hl.workspace_rule({ workspace = "4", monitor = "desc:LG Electronics LG ULTRAGEAR 309MAHUDPQ89", default = true })
-    hl.workspace_rule({ workspace = "5", monitor = "desc:LG Electronics LG ULTRAGEAR 309MAHUDPQ89", default = true })
-    hl.workspace_rule({ workspace = "6", monitor = "desc:LG Electronics LG ULTRAGEAR 309MAHUDPQ89", default = true })
-    hl.workspace_rule({ workspace = "7", monitor = "desc:Iiyama North America PL2466H 1177004102878", default = true })
-    hl.workspace_rule({ workspace = "8", monitor = "desc:Iiyama North America PL2466H 1177004102878", default = true })
-    hl.workspace_rule({ workspace = "9", monitor = "desc:Iiyama North America PL2466H 1177004102878", default = true })
-end
-
-local function apply_internship_workspaces()
-    hl.workspace_rule({ workspace = "4", monitor = "desc:Lenovo Group Limited P27h-20 V90CBDE4", default = true })
-    hl.workspace_rule({ workspace = "5", monitor = "desc:Lenovo Group Limited P27h-20 V90CBDE4", default = true })
-    hl.workspace_rule({ workspace = "6", monitor = "desc:Lenovo Group Limited P27h-20 V90CBDE4", default = true })
-    hl.workspace_rule({ workspace = "7", monitor = "desc:LG Electronics IPS235 Serial Number", default = true })
-    hl.workspace_rule({ workspace = "8", monitor = "desc:LG Electronics IPS235 Serial Number", default = true })
-    hl.workspace_rule({ workspace = "9", monitor = "desc:LG Electronics IPS235 Serial Number", default = true })
-end
-
-hl.on("monitor.added", function(m)
-    if m.description:find("LG Electronics LG ULTRAGEAR 309MAHUDPQ89", 1, true) then
-        apply_home_workspaces()
-    elseif m.description:find("Lenovo Group Limited P27h-20 V90CBDE4", 1, true) then
-        apply_internship_workspaces()
-    end
-end)
-
 
 
 -------------------
@@ -123,13 +129,9 @@ end)
 -------------------
 
 hl.on("hyprland.start", function ()
-    hl.exec_cmd("gsettings set org.gnome.desktop.interface gtk-theme \"Adwaita-dark\"") -- TODO: Still needed?
-    hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme \"prefer-dark\"") -- TODO: Still needed?
-
     hl.exec_cmd("waybar & hyprpaper & hypridle & hyprshot & hyprsunset")
     hl.exec_cmd("swaync") -- Notification Daemon
     hl.exec_cmd("wl-paste --watch cliphist store") -- Save Wayland clipboard entries to cliphist
-    hl.exec_cmd("kwalletd6") -- TODO: Still needed? was for Brave not remembering logins/cookies/sessions
 
 
     hl.exec_cmd("sleep 5; anki", { workspace = "4 silent" })
@@ -174,7 +176,10 @@ hl.bind(mainMod .. " + CTRL + S", hl.dsp.exec_cmd("hyprshot -m window -o $HOME/i
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(""))
 
 hl.bind(mainMod .. " + F", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + G", hl.dsp.window.pseudo()) -- dwindle, float in center
+hl.bind(mainMod .. " + G", function()
+    hl.dispatch(hl.dsp.window.pseudo())                 -- dwindle, float in center
+    hl.dispatch(hl.dsp.window.tag({ tag = "pseudo" }))    -- toggle tag
+end)
 
 hl.bind(mainMod .. " + H", hl.dsp.exec_cmd("arecord -f cd -t wav /tmp/stt_recording.wav"))
 hl.bind(mainMod .. " + H", hl.dsp.exec_cmd("bash $HOME/.config/hypr/scripts/stt.sh"), { release = true })
@@ -194,7 +199,7 @@ hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist wipe")) -- Wipe cli
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("pkill -USR1 waybar")) -- Toggle Waybar
 hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd("pkill -USR2 waybar; pkill hyprpaper; hyprpaper &")) -- Reload Waybar & Hyprpaper
 
-hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("rofi -show emoji -modi emoji"))
+hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("rofimoji -s neutral --max-recent 0"))
 
 -- -----------------------------------------------------------
 -- Right side: Number row, Right hand & Numpad | Workspaces --
@@ -311,14 +316,18 @@ hl.device({
 })
 
 
------------------------
----- LOOK AND FEEL ----
------------------------
+--------------------
+---- APPEARANCE ----
+--------------------
 hl.config({
     general = {
         gaps_in  = 0,
         gaps_out = 0,
-        border_size = 0,
+        border_size = 1,
+        col = {
+            active_border   = "rgba(606060ff)",
+            inactive_border = "rgba(202020ff)"
+        },
 
         layout = "dwindle"
     },
@@ -334,24 +343,13 @@ hl.config({
             noise     = 0.025
         },
 
-        shadow = {
-            enabled        = false,
-            range          = 2,
-            render_power   = 2,
-            sharp          = false,
-            color          = "rgba(0000FFFF)",
-            color_inactive = "rgba(00FF00FF)",
-            offset         = {0,0},
-            scale          = 1.0
-        },
-
         glow = {
             enabled = true,
-            range = 6,
-            color = "rgba(FFFFFF43)",
-            --color = "rgba(FFAE0088)";
-            color_inactive = "rgba(00000088)",
-            --color_inactive = "rgba(000000ff)",
+            range = 4,
+            --color = "rgba(FFFFFF43)",
+            color = "rgba(606060ff)";
+            --color_inactive = "rgba(00000088)",
+            color_inactive = "rgba(202020ff)",
         }
     },
 
@@ -360,13 +358,13 @@ hl.config({
     }
 })
 
-hl.curve("easeOutQuint",   { type = "bezier", points = { {0.23, 1},    {0.32, 1}    } })
-hl.curve("easeInOutCubic", { type = "bezier", points = { {0.65, 0.05}, {0.36, 1}    } })
-hl.curve("linear",         { type = "bezier", points = { {0, 0},       {1, 1}       } })
-hl.curve("almostLinear",   { type = "bezier", points = { {0.5, 0.5},   {0.75, 1}    } })
-hl.curve("quick",          { type = "bezier", points = { {0.15, 0},    {0.1, 1}     } })
+hl.curve("easeOutQuint",   { type = "bezier", points = { {0.23, 1},    {0.32, 1} } })
+hl.curve("easeInOutCubic", { type = "bezier", points = { {0.65, 0.05}, {0.36, 1} } })
+hl.curve("linear",         { type = "bezier", points = { {0, 0},       {1, 1}    } })
+hl.curve("almostLinear",   { type = "bezier", points = { {0.5, 0.5},   {0.75, 1} } })
+hl.curve("quick",          { type = "bezier", points = { {0.15, 0},    {0.1, 1}  } })
 
--- No springyness (updated since 0.56)
+-- No springiness (updated since 0.56)
 hl.curve("easy", { type = "spring", mass = 1, stiffness = 480, dampening = 40 })
 
 hl.animation({ leaf = "global",        enabled = true,  speed = 100,   bezier = "default" }) -- Default = 10
@@ -406,9 +404,9 @@ hl.config({
     }
 })
 
------------------------------
----- CUSTOM APP BEHAVIOR ----
------------------------------
+----------------------
+---- WINDOW RULES ----
+----------------------
 
 local suppressMaximizeRule = hl.window_rule({
     -- Ignore maximize requests from all apps. You'll probably like this.
@@ -434,26 +432,31 @@ hl.window_rule({
     no_focus = true
 })
 
+hl.window_rule({
+    name = "rounded-floating",
+    match = { float = true },
+    rounding = 16
+})
 
 hl.window_rule({
-    match = {
-        class = "blender",
-    },
+    name = "rounded-pseudo",
+    match = { tag = "pseudo" },
+    rounding = 16
+})
+
+hl.window_rule({
+    match = { class = "blender" },
     float = true,
     size = { 1600, 1000 }
 })
 
 hl.window_rule({
-    match = {
-        class = "anki",
-    },
+    match = { class = "anki" },
     size = { 800, 600 }
 })
 
 hl.window_rule({
-    match = {
-        class = "dolphin",
-    },
+    match = { class = "dolphin" },
     float = true,
     size = { 800, 600 }
 })
