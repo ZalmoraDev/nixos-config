@@ -116,6 +116,7 @@ in
     # TODO: Commented lines contain sensitive data, figure out how to .gitignore a setup for this
     home.file = {
       # ABCD
+      ".local/share/Anki2/addons21".source = dotfiles + "/anki/.local/share/Anki2/addons21";      # 2026-10-10 | anki
       ".bashrc".source = dotfiles + "/bash/.bashrc";                                              # 2026-09-10 | bash
       ".bash_profile".source = dotfiles + "/bash/.bash_profile";                                  # 2026-09-10 | bash
       ".bash_logout".source = dotfiles + "/bash/.bash_logout";                                    # 2026-09-12 | bash
@@ -129,7 +130,6 @@ in
       ".config/ghostty".source = dotfiles + "/ghostty/.config/ghostty";                           # 2026-09-10 | ghostty
       ".gitconfig".source = dotfiles + "/git/.gitconfig";                                         # 2026-09-10 | git
       ".config/hypr".source = dotfiles + "/hypr/.config/hypr";                                    # 2026-09-10 | hyprland
-
 
       ###########################################################################
       # IJKL

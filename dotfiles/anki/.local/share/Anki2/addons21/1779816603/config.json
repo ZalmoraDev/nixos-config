@@ -1,0 +1,8 @@
+{
+  "keys": [
+      ["Black", "Alt+S", "Foreground"],
+      ["White", "Alt+S", "Background"],
+      ["#0000FF", "Ctrl+F", "Foreground"], 
+      ["#FFFF00", "Ctrl+H", "Background"]
+  ]
+}

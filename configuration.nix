@@ -3,6 +3,7 @@
 { config, pkgs, ... }:
 let
   home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz";
+  rootfiles = /etc/nixos/rootfiles;
 in
 {
   imports =
@@ -39,15 +40,19 @@ in
 
   ######################################################################################################################
   # region systemdboot, sddm & hyprland
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.systemd-boot.configurationLimit = 5;  # ESP is 260MiB, limit to 5 nixos generations
+  boot.loader = {
+    systemd-boot.enable = true;
+    systemd-boot.configurationLimit = 5;  # ESP is 260MiB, limit to 5 nixos generations
+    efi.canTouchEfiVariables = true;
+  };
 
   # TODO: Figure out how to have home-manager 'own' /etc\ folders
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
-    autoNumlock = true; # TODO: doesnt work
+    autoNumlock = true;
+    theme = "sddm-astronaut-theme";
+    extraPackages = [ pkgs.sddm-astronaut ];
   };
 
   # Configure keymap in X11
@@ -223,6 +228,7 @@ in
     rofimoji                  # 2026-09-08 | Rofi clipboard & emoji list
 
     scrcpy                    # 2026-09-08 | Display & Control Android Devices
+    sddm-astronaut            # 2026-10-10 | SDDM theme
     spotify                   # 2026-09-08 | Music streaming client
     starship                  # 2026-09-08 | Prompt string replacer
     steam                     # 2026-09-08 | PC Games
@@ -244,7 +250,7 @@ in
 
     xnconvert                 # 2026-09-08 | Bulk image converter
 
-    #zen                       # 2026-09-08 | Privacy centric firefox-based webbrowser
+    #zen                       # 2026-09-08 | Privacy centric firefox-based webbrowser # DOESN'T WORK
   ];
 
   # TODO: Place in home.nix?
@@ -263,7 +269,6 @@ in
       font-awesome
     ];
   };
-
 
 
 
@@ -291,5 +296,10 @@ in
     LC_PAPER = "nl_NL.UTF-8";
     LC_TELEPHONE = "nl_NL.UTF-8";
     LC_TIME = "en_US.UTF-8";
+  };
+
+  environment.etc = {
+    "sddm.conf.d/10-custom.conf".source = rootfiles + "/etc/sddm.conf.d/10-custom.conf";          # 2026-10-10 | sddm login (before hyprland login, no user concept)
+    "sddm/themes/silent".source = rootfiles + "/etc/sddm/themes/silent";                          # 2026-10-10 | sddm login (before hyprland login, no user concept)
   };
 }
