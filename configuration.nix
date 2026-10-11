@@ -46,13 +46,16 @@ in
     efi.canTouchEfiVariables = true;
   };
 
-  # TODO: Figure out how to have home-manager 'own' /etc\ folders
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
     autoNumlock = true;
     theme = "sddm-astronaut-theme";
     extraPackages = [ pkgs.sddm-astronaut ];
+  };
+  environment.etc = {
+    "sddm.conf.d/10-custom.conf".source = rootfiles + "/etc/sddm.conf.d/10-custom.conf";          # 2026-10-10 | sddm login (before hyprland login, no user concept)
+    "sddm/themes/silent".source = rootfiles + "/etc/sddm/themes/silent";                          # 2026-10-10 | sddm login (before hyprland login, no user concept)
   };
 
   # Configure keymap in X11
@@ -69,9 +72,8 @@ in
     xwayland.enable = true;
   };
 
-  # TODO: Verify is needed
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+#  programs.dconf.enable = true;
+#  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ]; # GTK portal: file pickers, dark-mode setting, OpenURI
 
 
   ######################################################################################################################
@@ -159,6 +161,8 @@ in
 
     ###########################################################################
     # EFGH
+    efibootmgr                # 2026-10-11 | EFI boot management tool
+
     fastfetch                 # 2026-09-08 | Display system info
     file                      # 2026-09-24 | Basic Linux util for file type identificaition
 
@@ -166,6 +170,7 @@ in
     git                       # 2026-09-08 | Version control system
     git-fame                  # 2026-09-11 | Git contribution statistic
     gource                    # 2026-09-11 | Git contribution timeline visualizer
+    gparted-full              # 2026-10-10 | GUI parted partition management
 
     hyprland                  # 2026-09-08 | Hyprland, Tiling window manager
     hypridle                  # 2026-09-08 | Hyprland sleep
@@ -253,7 +258,6 @@ in
     #zen                       # 2026-09-08 | Privacy centric firefox-based webbrowser # DOESN'T WORK
   ];
 
-  # TODO: Place in home.nix?
   fonts = {
     enableDefaultPackages = true;   # DejaVu, Liberation, etc.
 
@@ -270,16 +274,6 @@ in
     ];
   };
 
-
-
-  # TODO: Verify if needed, place in home.nix if needed
-  environment.pathsToLink = [
-    "/share/applications"
-    "/share/mime"
-    "/share/icons"
-  ];
-
-  # TODO: Place all of this also in home.nix?
   # Set your time zone.
   time.timeZone = "Europe/Amsterdam";
 
@@ -296,10 +290,5 @@ in
     LC_PAPER = "nl_NL.UTF-8";
     LC_TELEPHONE = "nl_NL.UTF-8";
     LC_TIME = "en_US.UTF-8";
-  };
-
-  environment.etc = {
-    "sddm.conf.d/10-custom.conf".source = rootfiles + "/etc/sddm.conf.d/10-custom.conf";          # 2026-10-10 | sddm login (before hyprland login, no user concept)
-    "sddm/themes/silent".source = rootfiles + "/etc/sddm/themes/silent";                          # 2026-10-10 | sddm login (before hyprland login, no user concept)
   };
 }

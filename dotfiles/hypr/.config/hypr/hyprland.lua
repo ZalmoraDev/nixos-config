@@ -19,58 +19,21 @@ hl.env("XDG_MENU_PREFIX", "lxde-") -- Set XDG association to match with lxde- op
 
 
 
----------------------
-----  WORKSPACES ----
----------------------
-
--- Laptop workspaces (Always 123)
-hl.workspace_rule({ workspace = "1", monitor = "desc:California Institute of Technology 0x1600", default = true })
-hl.workspace_rule({ workspace = "2", monitor = "desc:California Institute of Technology 0x1600", default = true })
-hl.workspace_rule({ workspace = "3", monitor = "desc:California Institute of Technology 0x1600", default = true })
-
--- Home monitor setup
--- 1) Laptop  16:10 1440p Bottom, Landscape secondary 123
--- 2) LG      16:9  1440p Top,    Landscape PRIMARY   456
--- 3) Iiyama  16:9  1080p Right,  Portrait  tertiary  789
-local function apply_home_workspaces()
-    hl.workspace_rule({ workspace = "4", monitor = "desc:LG Electronics LG ULTRAGEAR 309MAHUDPQ89", default = true })
-    hl.workspace_rule({ workspace = "5", monitor = "desc:LG Electronics LG ULTRAGEAR 309MAHUDPQ89", default = true })
-    hl.workspace_rule({ workspace = "6", monitor = "desc:LG Electronics LG ULTRAGEAR 309MAHUDPQ89", default = true })
-    hl.workspace_rule({ workspace = "7", monitor = "desc:Iiyama North America PL2466H 1177004102878", default = true })
-    hl.workspace_rule({ workspace = "8", monitor = "desc:Iiyama North America PL2466H 1177004102878", default = true })
-    hl.workspace_rule({ workspace = "9", monitor = "desc:Iiyama North America PL2466H 1177004102878", default = true })
-end
-
--- Internship monitor setup
--- 1) Laptop  16:10 1440p Left,   Landscape secondary 123
--- 2) Lenovo  16:9  1440p Center, Landscape PRIMARY   456
--- 3) LG      16:9  1080p Right,  Portrait  tertiary   789
-local function apply_internship_workspaces()
-    hl.workspace_rule({ workspace = "4", monitor = "desc:Lenovo Group Limited P27h-20 V90CBDE4", default = true })
-    hl.workspace_rule({ workspace = "5", monitor = "desc:Lenovo Group Limited P27h-20 V90CBDE4", default = true })
-    hl.workspace_rule({ workspace = "6", monitor = "desc:Lenovo Group Limited P27h-20 V90CBDE4", default = true })
-    hl.workspace_rule({ workspace = "7", monitor = "desc:LG Electronics IPS235 Serial Number", default = true })
-    hl.workspace_rule({ workspace = "8", monitor = "desc:LG Electronics IPS235 Serial Number", default = true })
-    hl.workspace_rule({ workspace = "9", monitor = "desc:LG Electronics IPS235 Serial Number", default = true })
-end
-
--- Select which workspaces to add based on setup location
-hl.on("monitor.added", function(m)
-    if m.description:find("LG Electronics LG ULTRAGEAR 309MAHUDPQ89", 1, true) then
-        apply_home_workspaces()
-    elseif m.description:find("Lenovo Group Limited P27h-20 V90CBDE4", 1, true) then
-        apply_internship_workspaces()
-    end
-end)
-
 ------------------
 ---- MONITORS ----
 ------------------
--- Use `hyprctl monitors`
+
+local laptop_monitor = "California Institute of Technology 0x1600";
+
+local home_monitor_1 = "LG Electronics LG ULTRAGEAR 309MAHUDPQ89";
+local home_monitor_2 = "Iiyama North America PL2466H 1177004102878";
+
+local internship_monitor_1 = "Lenovo Group Limited P27h-20 V90CBDE4";
+local internship_monitor_2 = "LG Electronics IPS235 Serial Number";
 
 -- Laptop
 hl.monitor({
-    output   = "desc:California Institute of Technology 0x1600",
+    output   = "desc:" .. laptop_monitor,
     mode     = "2560x1600@165.01900",
     position = "0x1440",
     scale    = "1.25",
@@ -78,11 +41,10 @@ hl.monitor({
     bitdepth = 8
 })
 
-
 -- Home monitors --
 -- LG - Home
 hl.monitor({
-    output   = "desc:LG Electronics LG ULTRAGEAR 309MAHUDPQ89",
+    output   = "desc:" .. home_monitor_1,
     mode     = "2560x1440@143.93300",
     position = "0x0",
     scale    = "1",
@@ -91,20 +53,19 @@ hl.monitor({
 })
 -- Iiyama - Home
 hl.monitor({
-    output    = "desc:Iiyama North America PL2466H 1177004102878",
+    output    = "desc:" .. home_monitor_2,
     mode      = "1920x1080@60.00000",
     position  = "2560x0",
     scale     = "1",
     cm        = "srgb",
     bitdepth  = 8,
-    transform = 3 -- Right is up, Left is down
+    transform = 3 -- counterclockwise, right is up, left is down
 })
-
 
 -- Internship monitors --
 -- Lenovo - Internship
 hl.monitor({
-    output   = "desc:Lenovo Group Limited P27h-20 V90CBDE4",
+    output   = "desc:" .. internship_monitor_1,
     mode     = "2560x1440@59.95",
     position = "2048x1440",
     scale    = "1",
@@ -113,7 +74,7 @@ hl.monitor({
 })
 -- LG - Internship
 hl.monitor({
-    output    = "desc:LG Electronics IPS235 Serial Number",
+    output    = "desc:" .. internship_monitor_2,
     mode      = "1920x1080@60.00",
     position  = "4608x1440",
     scale     = "1",
@@ -124,12 +85,58 @@ hl.monitor({
 
 
 
+---------------------
+----  WORKSPACES ----
+---------------------
+
+-- Laptop workspaces (Always 123)
+hl.workspace_rule({ workspace = "1", monitor = "desc:" .. laptop_monitor, default = true })
+hl.workspace_rule({ workspace = "2", monitor = "desc:" .. laptop_monitor, default = true })
+hl.workspace_rule({ workspace = "3", monitor = "desc:" .. laptop_monitor, default = true })
+
+-- Home monitor setup
+-- 1) Laptop  16:10 1440p Bottom, Landscape secondary 123
+-- 2) LG      16:9  1440p Top,    Landscape PRIMARY   456
+-- 3) Iiyama  16:9  1080p Right,  Portrait  tertiary  789
+local function apply_home_workspaces()
+    hl.workspace_rule({ workspace = "4", monitor = "desc:" .. home_monitor_1, default = true })
+    hl.workspace_rule({ workspace = "5", monitor = "desc:" .. home_monitor_1, default = true })
+    hl.workspace_rule({ workspace = "6", monitor = "desc:" .. home_monitor_1, default = true })
+    hl.workspace_rule({ workspace = "7", monitor = "desc:" .. home_monitor_2, default = true })
+    hl.workspace_rule({ workspace = "8", monitor = "desc:" .. home_monitor_2, default = true })
+    hl.workspace_rule({ workspace = "9", monitor = "desc:" .. home_monitor_2, default = true })
+end
+
+-- Internship monitor setup
+-- 1) Laptop  16:10 1440p Left,   Landscape secondary 123
+-- 2) Lenovo  16:9  1440p Center, Landscape PRIMARY   456
+-- 3) LG      16:9  1080p Right,  Portrait  tertiary   789
+local function apply_internship_workspaces()
+    hl.workspace_rule({ workspace = "4", monitor = "desc:" .. internship_monitor_1, default = true })
+    hl.workspace_rule({ workspace = "5", monitor = "desc:" .. internship_monitor_1, default = true })
+    hl.workspace_rule({ workspace = "6", monitor = "desc:" .. internship_monitor_1, default = true })
+    hl.workspace_rule({ workspace = "7", monitor = "desc:" .. internship_monitor_2, default = true })
+    hl.workspace_rule({ workspace = "8", monitor = "desc:" .. internship_monitor_2, default = true })
+    hl.workspace_rule({ workspace = "9", monitor = "desc:" .. internship_monitor_2, default = true })
+end
+
+-- Select which workspaces to add based on setup location
+hl.on("monitor.added", function(monitor)
+    if monitor.description:find(home_monitor_1, 1, true) | monitor.description:find(home_monitor_2, 1, true) then
+        apply_home_workspaces()
+    elseif monitor.description:find(internship_monitor_1, 1, true) | monitor.description:find(internship_monitor_2, 1, true) then
+        apply_internship_workspaces()
+    end
+end)
+
+
+
 -------------------
 ---- AUTOSTART ----
 -------------------
 
 hl.on("hyprland.start", function ()
-    hl.exec_cmd("waybar & hyprpaper & hypridle & hyprshot & hyprsunset")
+    hl.exec_cmd("waybar & hyprpaper & hypridle & hyprshot & hyprsunset & hyprlock")
     hl.exec_cmd("swaync") -- Notification Daemon
     hl.exec_cmd("wl-paste --watch cliphist store") -- Save Wayland clipboard entries to cliphist
 
@@ -282,6 +289,7 @@ hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = tr
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
 
 
+
 ---------------
 ---- INPUT ----
 ---------------
@@ -316,6 +324,7 @@ hl.device({
     output    = "current",
     transform = 0
 })
+
 
 
 --------------------
@@ -405,6 +414,8 @@ hl.config({
         disable_hyprland_logo   = true
     }
 })
+
+
 
 ----------------------
 ---- WINDOW RULES ----
