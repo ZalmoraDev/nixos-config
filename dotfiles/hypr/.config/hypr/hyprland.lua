@@ -1,7 +1,7 @@
 --[[
 DISCLAIMER !!!
 These keybinds are meant to work with
-my split keyboard in mind, so some
+my split keyboard in mind, so
 binds might seem unintuitive.
 
 I also still change keys & binds,
@@ -9,20 +9,42 @@ so take that into consideration.
 
 ZSA Moonlander config:
 https://configure.zsa.io/moonlander/layouts/0N5XK/latest/0
+
+[1/7] ENVIRONMENT
+[2/7] AUTOSTART
+[3/7] MONITORS
+[4/7] WORKSPACES
+[5/7] APPEARANCE
+[6/7] INPUT
+[7/7] KEYBINDINGS
 ]]
 
--------------------------------
----- ENVIRONMENT VARIABLES ----
--------------------------------
-
+---------------------------
+---- [1/7] ENVIRONMENT ----
+---------------------------
 hl.env("XDG_MENU_PREFIX", "lxde-") -- Set XDG association to match with lxde- opposed to hyprland- menu entry (few KB of data)
 
 
 
-------------------
----- MONITORS ----
-------------------
+-------------------------
+---- [2/7] AUTOSTART ----
+-------------------------
+hl.on("hyprland.start", function ()
+    hl.exec_cmd("waybar & hyprpaper & hypridle & hyprshot & hyprsunset & hyprlock")
+    hl.exec_cmd("swaync") -- Notification Daemon
+    hl.exec_cmd("wl-paste --watch cliphist store") -- Save Wayland clipboard entries to cliphist
 
+    hl.exec_cmd("sleep 5; anki", { workspace = "4 silent" })
+
+    hl.exec_cmd("sleep 5; brave", { workspace = "7 silent" })
+    hl.exec_cmd("sleep 5; spotify", { workspace = "9 silent" })
+end)
+
+
+
+------------------------
+---- [3/7] MONITORS ----
+------------------------
 local laptop_monitor = "California Institute of Technology 0x1600";
 
 local home_monitor_1 = "LG Electronics LG ULTRAGEAR 309MAHUDPQ89";
@@ -85,10 +107,9 @@ hl.monitor({
 
 
 
----------------------
-----  WORKSPACES ----
----------------------
-
+--------------------------
+---- [4/7] WORKSPACES ----
+--------------------------
 -- Laptop workspaces (Always 123)
 hl.workspace_rule({ workspace = "1", monitor = "desc:" .. laptop_monitor, default = true })
 hl.workspace_rule({ workspace = "2", monitor = "desc:" .. laptop_monitor, default = true })
@@ -122,37 +143,153 @@ end
 
 -- Select which workspaces to add based on setup location
 hl.on("monitor.added", function(monitor)
-    if monitor.description:find(home_monitor_1, 1, true) | monitor.description:find(home_monitor_2, 1, true) then
+    if monitor.description:find(home_monitor_1, 1, true) or
+            monitor.description:find(home_monitor_2, 1, true) then
         apply_home_workspaces()
-    elseif monitor.description:find(internship_monitor_1, 1, true) | monitor.description:find(internship_monitor_2, 1, true) then
+    elseif monitor.description:find(internship_monitor_1, 1, true) or
+            monitor.description:find(internship_monitor_2, 1, true) then
         apply_internship_workspaces()
     end
 end)
 
 
+hl.window_rule({ name = "rounded-floating", match = { float = true }, rounding = 16 }) -- apply rounding to floating
+hl.window_rule({ name = "rounded-pseudo", match = { tag = "pseudo" }, rounding = 16 }) -- apply rounding to pseudo tagged
 
--------------------
----- AUTOSTART ----
--------------------
-
-hl.on("hyprland.start", function ()
-    hl.exec_cmd("waybar & hyprpaper & hypridle & hyprshot & hyprsunset & hyprlock")
-    hl.exec_cmd("swaync") -- Notification Daemon
-    hl.exec_cmd("wl-paste --watch cliphist store") -- Save Wayland clipboard entries to cliphist
+hl.window_rule({ match = { class = "blender" }, float = true, size = { 1600, 1000 } })
+hl.window_rule({ match = { class = "anki" }, size = { 800, 600 } })
+hl.window_rule({ match = { class = "dolphin" }, float = true, size = { 800, 600 } })
 
 
-    hl.exec_cmd("sleep 5; anki", { workspace = "4 silent" })
 
-    hl.exec_cmd("sleep 5; brave", { workspace = "7 silent" })
-    hl.exec_cmd("sleep 5; spotify", { workspace = "9 silent" })
-end)
+--------------------------
+---- [5/7] APPEARANCE ----
+--------------------------
+hl.config({
+    general = {
+        gaps_in  = 0,
+        gaps_out = 0,
+        border_size = 1,
+        col = {
+            active_border   = "rgba(606060ff)",
+            inactive_border = "rgba(202020ff)"
+        },
+
+        layout = "dwindle"
+    },
+
+    decoration = {
+        rounding       = 0,
+        rounding_power = 2,
+
+        blur = {
+            enabled   = true,
+            size      = 1,
+            passes    = 1,
+            noise     = 0.025
+        },
+
+        glow = {
+            enabled = true,
+            range = 4,
+            color = "rgba(606060ff)";
+            color_inactive = "rgba(202020ff)",
+        }
+    },
+
+    animations = {
+        enabled = true
+    }
+})
+
+hl.curve("easeOutQuint",   { type = "bezier", points = { {0.23, 1},    {0.32, 1} } })
+hl.curve("easeInOutCubic", { type = "bezier", points = { {0.65, 0.05}, {0.36, 1} } })
+hl.curve("linear",         { type = "bezier", points = { {0, 0},       {1, 1}    } })
+hl.curve("almostLinear",   { type = "bezier", points = { {0.5, 0.5},   {0.75, 1} } })
+hl.curve("quick",          { type = "bezier", points = { {0.15, 0},    {0.1, 1}  } })
+
+-- No springiness (updated since 0.56)
+hl.curve("easy", { type = "spring", mass = 1, stiffness = 480, dampening = 40 })
+
+hl.animation({ leaf = "global",        enabled = true,  speed = 100,  bezier = "default" }) -- Default = 10
+hl.animation({ leaf = "border",        enabled = true,  speed = 5.39, bezier = "easeOutQuint" })
+hl.animation({ leaf = "windows",       enabled = true,  speed = 4.79, spring = "easy" })
+hl.animation({ leaf = "windowsIn",     enabled = true,  speed = 4.1,  spring = "easy",         style = "popin 87%" })
+hl.animation({ leaf = "windowsOut",    enabled = true,  speed = 1.49, bezier = "linear",       style = "popin 87%" })
+hl.animation({ leaf = "fadeIn",        enabled = true,  speed = 1.73, bezier = "almostLinear" })
+hl.animation({ leaf = "fadeOut",       enabled = true,  speed = 1.46, bezier = "almostLinear" })
+hl.animation({ leaf = "fade",          enabled = true,  speed = 3.03, bezier = "quick" })
+hl.animation({ leaf = "layers",        enabled = true,  speed = 3.81, bezier = "easeOutQuint" })
+hl.animation({ leaf = "layersIn",      enabled = true,  speed = 4,    bezier = "easeOutQuint", style = "fade" })
+hl.animation({ leaf = "layersOut",     enabled = true,  speed = 1.5,  bezier = "linear",       style = "fade" })
+hl.animation({ leaf = "fadeLayersIn",  enabled = true,  speed = 1.79, bezier = "almostLinear" })
+hl.animation({ leaf = "fadeLayersOut", enabled = true,  speed = 1.39, bezier = "almostLinear" })
+hl.animation({ leaf = "workspaces",    enabled = true,  speed = 1.94, bezier = "almostLinear", style = "fade" })
+hl.animation({ leaf = "workspacesIn",  enabled = true,  speed = 1.21, bezier = "almostLinear", style = "fade" })
+hl.animation({ leaf = "workspacesOut", enabled = true,  speed = 1.94, bezier = "almostLinear", style = "fade" })
+hl.animation({ leaf = "zoomFactor",    enabled = true,  speed = 7,    bezier = "quick" })
+
+hl.config({
+    xwayland = {
+        force_zero_scaling = true
+    },
+    dwindle = {
+        preserve_split = true
+    },
+    master = {
+        new_status = "master"
+    },
+    scrolling = {
+        fullscreen_on_one_column = true
+    },
+    misc = {
+        force_default_wallpaper = 0,
+        disable_hyprland_logo   = true
+    }
+})
 
 
 
 ---------------------
----- KEYBINDINGS ----
+---- [6/7] INPUT ----
 ---------------------
+hl.config({
+    input = {
+        kb_layout  = "us",
+        kb_variant = "",
+        kb_model   = "",
+        kb_options = "",
+        kb_rules   = "",
 
+        numlock_by_default = true,
+
+        follow_mouse = 1,
+
+        sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
+
+        touchpad = {
+            natural_scroll = false,
+        }
+    }
+})
+
+hl.gesture({
+    fingers = 3,
+    direction = "horizontal",
+    action = "workspace"
+})
+
+hl.device({
+    name      = "wacom-intuos-s-pen",
+    output    = "current",
+    transform = 0
+})
+
+
+
+---------------------------
+---- [7/7] KEYBINDINGS ----
+---------------------------
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
 -- ------------------------
@@ -290,186 +427,32 @@ hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = tr
 
 
 
----------------
----- INPUT ----
----------------
-hl.config({
-    input = {
-        kb_layout  = "us",
-        kb_variant = "",
-        kb_model   = "",
-        kb_options = "",
-        kb_rules   = "",
-
-        numlock_by_default = true,
-
-        follow_mouse = 1,
-
-        sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
-
-        touchpad = {
-            natural_scroll = false,
-        }
-    }
-})
-
-hl.gesture({
-    fingers = 3,
-    direction = "horizontal",
-    action = "workspace"
-})
-
-hl.device({
-    name      = "wacom-intuos-s-pen",
-    output    = "current",
-    transform = 0
-})
-
-
-
---------------------
----- APPEARANCE ----
---------------------
-hl.config({
-    general = {
-        gaps_in  = 0,
-        gaps_out = 0,
-        border_size = 1,
-        col = {
-            active_border   = "rgba(606060ff)",
-            inactive_border = "rgba(202020ff)"
-        },
-
-        layout = "dwindle"
-    },
-
-    decoration = {
-        rounding       = 0,
-        rounding_power = 2,
-
-        blur = {
-            enabled   = true,
-            size      = 1,
-            passes    = 1,
-            noise     = 0.025
-        },
-
-        glow = {
-            enabled = true,
-            range = 4,
-            --color = "rgba(FFFFFF43)",
-            color = "rgba(606060ff)";
-            --color_inactive = "rgba(00000088)",
-            color_inactive = "rgba(202020ff)",
-        }
-    },
-
-    animations = {
-        enabled = true
-    }
-})
-
-hl.curve("easeOutQuint",   { type = "bezier", points = { {0.23, 1},    {0.32, 1} } })
-hl.curve("easeInOutCubic", { type = "bezier", points = { {0.65, 0.05}, {0.36, 1} } })
-hl.curve("linear",         { type = "bezier", points = { {0, 0},       {1, 1}    } })
-hl.curve("almostLinear",   { type = "bezier", points = { {0.5, 0.5},   {0.75, 1} } })
-hl.curve("quick",          { type = "bezier", points = { {0.15, 0},    {0.1, 1}  } })
-
--- No springiness (updated since 0.56)
-hl.curve("easy", { type = "spring", mass = 1, stiffness = 480, dampening = 40 })
-
-hl.animation({ leaf = "global",        enabled = true,  speed = 100,   bezier = "default" }) -- Default = 10
-hl.animation({ leaf = "border",        enabled = true,  speed = 5.39, bezier = "easeOutQuint" })
-hl.animation({ leaf = "windows",       enabled = true,  speed = 4.79, spring = "easy" })
-hl.animation({ leaf = "windowsIn",     enabled = true,  speed = 4.1,  spring = "easy",         style = "popin 87%" })
-hl.animation({ leaf = "windowsOut",    enabled = true,  speed = 1.49, bezier = "linear",       style = "popin 87%" })
-hl.animation({ leaf = "fadeIn",        enabled = true,  speed = 1.73, bezier = "almostLinear" })
-hl.animation({ leaf = "fadeOut",       enabled = true,  speed = 1.46, bezier = "almostLinear" })
-hl.animation({ leaf = "fade",          enabled = true,  speed = 3.03, bezier = "quick" })
-hl.animation({ leaf = "layers",        enabled = true,  speed = 3.81, bezier = "easeOutQuint" })
-hl.animation({ leaf = "layersIn",      enabled = true,  speed = 4,    bezier = "easeOutQuint", style = "fade" })
-hl.animation({ leaf = "layersOut",     enabled = true,  speed = 1.5,  bezier = "linear",       style = "fade" })
-hl.animation({ leaf = "fadeLayersIn",  enabled = true,  speed = 1.79, bezier = "almostLinear" })
-hl.animation({ leaf = "fadeLayersOut", enabled = true,  speed = 1.39, bezier = "almostLinear" })
-hl.animation({ leaf = "workspaces",    enabled = true,  speed = 1.94, bezier = "almostLinear", style = "fade" })
-hl.animation({ leaf = "workspacesIn",  enabled = true,  speed = 1.21, bezier = "almostLinear", style = "fade" })
-hl.animation({ leaf = "workspacesOut", enabled = true,  speed = 1.94, bezier = "almostLinear", style = "fade" })
-hl.animation({ leaf = "zoomFactor",    enabled = true,  speed = 7,    bezier = "quick" })
-
-hl.config({
-    xwayland = {
-        force_zero_scaling = true
-    },
-    dwindle = {
-        preserve_split = true
-    },
-    master = {
-        new_status = "master"
-    },
-    scrolling = {
-        fullscreen_on_one_column = true
-    },
-    misc = {
-        force_default_wallpaper = 0,
-        disable_hyprland_logo   = true
-    }
-})
-
-
-
 ----------------------
 ---- WINDOW RULES ----
 ----------------------
 
-local suppressMaximizeRule = hl.window_rule({
-    -- Ignore maximize requests from all apps. You'll probably like this.
-    name  = "suppress-maximize-events",
-    match = { class = ".*" },
+-- TODO: Commented for now, figure out if it can be deleted
 
-    suppress_event = "maximize"
-})
-suppressMaximizeRule:set_enabled(false)
+--local suppressMaximizeRule = hl.window_rule({
+--    -- Ignore maximize requests from all apps. TAKEN FROM DEFAULT CONFIG
+--    name  = "suppress-maximize-events",
+--    match = { class = ".*" },
+--
+--    suppress_event = "maximize"
+--})
+--suppressMaximizeRule:set_enabled(false)
 
-hl.window_rule({
-    -- Fix some dragging issues with XWayland
-    name  = "fix-xwayland-drags",
-    match = {
-        class      = "^$",
-        title      = "^$",
-        xwayland   = true,
-        float      = true,
-        fullscreen = false,
-        pin        = false,
-    },
-
-    no_focus = true
-})
-
-hl.window_rule({
-    name = "rounded-floating",
-    match = { float = true },
-    rounding = 16
-})
-
-hl.window_rule({
-    name = "rounded-pseudo",
-    match = { tag = "pseudo" },
-    rounding = 16
-})
-
-hl.window_rule({
-    match = { class = "blender" },
-    float = true,
-    size = { 1600, 1000 }
-})
-
-hl.window_rule({
-    match = { class = "anki" },
-    size = { 800, 600 }
-})
-
-hl.window_rule({
-    match = { class = "dolphin" },
-    float = true,
-    size = { 800, 600 }
-})
+--hl.window_rule({
+--    -- Fix some dragging issues with XWayland
+--    name  = "fix-xwayland-drags",
+--    match = {
+--        class      = "^$",
+--        title      = "^$",
+--        xwayland   = true,
+--        float      = true,
+--        fullscreen = false,
+--        pin        = false,
+--    },
+--
+--    no_focus = true
+--})

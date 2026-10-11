@@ -87,13 +87,6 @@ in
     style.name = "breeze";
   };
 
-
-#  dconf = {
-#    enable = true;
-#    settings."org/gnome/desktop/interface".text-scaling-factor = 1.0;
-#  };
-
-
   xdg = {
     userDirs = {
       enable = true;

@@ -72,9 +72,6 @@ in
     xwayland.enable = true;
   };
 
-#  programs.dconf.enable = true;
-#  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ]; # GTK portal: file pickers, dark-mode setting, OpenURI
-
 
   ######################################################################################################################
   # region GPU Support
@@ -93,6 +90,7 @@ in
     };
   };
   services.xserver.videoDrivers = ["nvidia"];
+
 
   ######################################################################################################################
   # region User & System
