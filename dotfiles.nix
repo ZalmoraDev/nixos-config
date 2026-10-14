@@ -1,5 +1,4 @@
 { config, pkgs, ... }:
-
 let
   dotfiles = /etc/nixos/dotfiles;
 in
@@ -86,6 +85,7 @@ in
     #platformTheme.name = "qt5ct";
     style.name = "breeze";
   };
+
 
   xdg = {
     userDirs = {

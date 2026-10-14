@@ -171,7 +171,7 @@ hl.config({
         gaps_out = 0,
         border_size = 1,
         col = {
-            active_border   = "rgba(606060ff)",
+            active_border   = "rgba(505050ff)",
             inactive_border = "rgba(202020ff)"
         },
 
@@ -192,8 +192,8 @@ hl.config({
         glow = {
             enabled = true,
             range = 4,
-            color = "rgba(606060ff)";
-            color_inactive = "rgba(202020ff)",
+            color = "rgba(505050ff)";
+            color_inactive = "rgba(202020ff)"
         }
     },
 
@@ -290,64 +290,66 @@ hl.device({
 ---------------------------
 ---- [7/7] KEYBINDINGS ----
 ---------------------------
-local mainMod = "SUPER" -- Sets "Windows" key as main modifier
+local super = "SUPER" -- Sets "Windows" key as main modifier
 
--- ------------------------
+-- --------------------- --
 -- Top row | Common apps --
--- ------------------------
-hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("ghostty"))
-hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("brave"))
-hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("dolphin"))
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("anki"))
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("obsidian"))
-hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd("spotify"))
+-- --------------------- --
+hl.bind(super .. " + Q", hl.dsp.exec_cmd("ghostty"))
+hl.bind(super .. " + W", hl.dsp.exec_cmd("brave"))
+hl.bind(super .. " + E", hl.dsp.exec_cmd("dolphin"))
+hl.bind(super .. " + R", hl.dsp.exec_cmd("anki"))
+hl.bind(super .. " + T", hl.dsp.exec_cmd("obsidian"))
+hl.bind(super .. " + Y", hl.dsp.exec_cmd("spotify"))
 
--- ------------------------------------------------- --
+
+-- --------------------------------------------- --
 -- Home row | OS behavior, Window behavior & STT --
--- ------------------------------------------------- --
-
+-- --------------------------------------------- --
 -- Media Controls (Quickbind)
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("playerctl play-pause")) -- 2 entries, this one is for 8BitDo controller support, other is "XF86AudioPause"
-hl.bind(mainMod .. " + SHIFT + A",  hl.dsp.exec_cmd("playerctl next"), { locked = true })
-hl.bind(mainMod .. " + CTRL + A",  hl.dsp.exec_cmd("playerctl previous"), { locked = true })
+hl.bind(super .. " + A", hl.dsp.exec_cmd("playerctl play-pause")) -- 2 entries, this one is for 8BitDo controller support, other is "XF86AudioPause"
+hl.bind(super .. " + SHIFT + A",  hl.dsp.exec_cmd("playerctl next"), { locked = true })
+hl.bind(super .. " + CTRL + A",  hl.dsp.exec_cmd("playerctl previous"), { locked = true })
 
 -- Screenshot (Quickbind)
-hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("hyprshot -m output -o $HOME/images/screenshots/$(date +%Y-%m)")) -- 2 entries, other is 'PRINT'
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("hyprshot -m region -o $HOME/images/screenshots/$(date +%Y-%m)")) -- 2 entries, other is 'PRINT .. " + SHIFT'
-hl.bind(mainMod .. " + CTRL + S", hl.dsp.exec_cmd("hyprshot -m window -o $HOME/images/screenshots/$(date +%Y-%m)")) -- 2 entries, other is 'PRINT .. " + CTRL'
+hl.bind(super .. " + S", hl.dsp.exec_cmd("hyprshot -m output -o $HOME/images/screenshots/$(date +%Y-%m)")) -- 2 entries, other is 'PRINT'
+hl.bind(super .. " + SHIFT + S", hl.dsp.exec_cmd("hyprshot -m region -o $HOME/images/screenshots/$(date +%Y-%m)")) -- 2 entries, other is 'PRINT .. " + SHIFT'
+hl.bind(super .. " + CTRL + S", hl.dsp.exec_cmd("hyprshot -m window -o $HOME/images/screenshots/$(date +%Y-%m)")) -- 2 entries, other is 'PRINT .. " + CTRL'
 
 -- TODO: Add custom pomodoro timer controls
-hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(""))
+hl.bind(super .. " + D", hl.dsp.exec_cmd(""))
 
-hl.bind(mainMod .. " + F", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + G", function()
+hl.bind(super .. " + F", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(super .. " + G", function()
     hl.dispatch(hl.dsp.window.pseudo())                 -- dwindle, float in center
     hl.dispatch(hl.dsp.window.tag({ tag = "pseudo" }))    -- toggle tag
 end)
 
-hl.bind(mainMod .. " + H", hl.dsp.exec_cmd("arecord -f cd -t wav /tmp/stt_recording.wav"))
-hl.bind(mainMod .. " + H", hl.dsp.exec_cmd("bash $HOME/.config/hypr/scripts/stt.sh"), { release = true })
+hl.bind(super .. " + H", hl.dsp.exec_cmd("arecord -f cd -t wav /tmp/stt_recording.wav"))
+hl.bind(super .. " + H", hl.dsp.exec_cmd("bash $HOME/.config/hypr/scripts/stt.sh"), { release = true })
 
--- ---------------------------
+
+-- ------------------------ --
 -- Bottom row | OS behavior --
--- ---------------------------
-hl.bind(mainMod .. " + Z", hl.dsp.exec_cmd(""))
-hl.bind(mainMod .. " + X", hl.dsp.exec_cmd(""))
+-- ------------------------ --
+hl.bind(super .. " + Z", hl.dsp.exec_cmd(""))
+hl.bind(super .. " + X", hl.dsp.exec_cmd(""))
 
-hl.bind(mainMod .. " + C", hl.dsp.window.close())
-hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a"))
+hl.bind(super .. " + C", hl.dsp.window.close())
+hl.bind(super .. " + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a"))
 
-hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -display-columns 2 | cliphist decode | wl-copy # Show clipboard")) -- Show clipboard in Rofi
-hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist wipe")) -- Wipe cliphist
+hl.bind(super .. " + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -display-columns 2 | cliphist decode | wl-copy # Show clipboard")) -- Show clipboard in Rofi
+hl.bind(super .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist wipe")) -- Wipe cliphist
 
-hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("pkill -USR1 waybar")) -- Toggle Waybar
-hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd("pkill -USR2 waybar; pkill hyprpaper; hyprpaper &")) -- Reload Waybar & Hyprpaper
+hl.bind(super .. " + B", hl.dsp.exec_cmd("pkill -USR1 waybar")) -- Toggle Waybar
+hl.bind(super .. " + SHIFT + B", hl.dsp.exec_cmd("pkill -USR2 waybar; pkill hyprpaper; hyprpaper &")) -- Reload Waybar & Hyprpaper
 
-hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("rofimoji -s neutral --max-recent 0"))
+hl.bind(super .. " + N", hl.dsp.exec_cmd("rofimoji -s neutral --max-recent 0"))
 
--- -----------------------------------------------------------
+
+-- -------------------------------------------------------- --
 -- Right side: Number row, Right hand & Numpad | Workspaces --
--- -----------------------------------------------------------
+-- -------------------------------------------------------- --
 local workspaces = {
     { "1", "M",      "code:87" },
     { "2", "COMMA",  "code:88" },
@@ -367,29 +369,31 @@ local workspaces = {
 -- key      = current string value in keyGroup
 for ws, keyGroup in ipairs(workspaces) do
     for _, key in ipairs(keyGroup) do
-        hl.bind(mainMod .. " + " .. key,         hl.dsp.focus({ workspace = ws }))
-        hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = ws }))
+        hl.bind(super .. " + " .. key,         hl.dsp.focus({ workspace = ws }))
+        hl.bind(super .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = ws }))
     end
 end
 
--- -------------------------------
+
+-- ---------------------------- --
 -- Rightmost | Common documents --
--- -------------------------------
-hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("okular $HOME/documents/reading/lpic-1.pdf"))
-hl.bind(mainMod .. " + EQUAL", hl.dsp.exec_cmd("okular -p 634  $HOME/documents/reading/lpic-1.pdf")) -- Review question answers
+-- ---------------------------- --
+hl.bind(super .. " + P", hl.dsp.exec_cmd("okular $HOME/documents/reading/lpic-1.pdf"))
+hl.bind(super .. " + EQUAL", hl.dsp.exec_cmd("okular -p 634  $HOME/documents/reading/lpic-1.pdf")) -- Review question answers
 
-hl.bind(mainMod .. " + SEMICOLON", hl.dsp.exec_cmd(""))
-hl.bind(mainMod .. " + APOSTROPHE", hl.dsp.exec_cmd(""))
+hl.bind(super .. " + SEMICOLON", hl.dsp.exec_cmd(""))
+hl.bind(super .. " + APOSTROPHE", hl.dsp.exec_cmd(""))
 
-hl.bind(mainMod .. " + SLASH", hl.dsp.exec_cmd(""))
-hl.bind(mainMod .. " + BACKSLASH", hl.dsp.exec_cmd("onlyoffice-desktopeditors $HOME/documents/reading/jb-refererencecard.odg"))
+hl.bind(super .. " + SLASH", hl.dsp.exec_cmd(""))
+hl.bind(super .. " + BACKSLASH", hl.dsp.exec_cmd("onlyoffice-desktopeditors $HOME/documents/reading/jb-refererencecard.odg"))
 
--- ----------
+
+-- ------- --
 -- Special --
--- ----------
-hl.bind(mainMod .. " + ESCAPE", hl.dsp.exec_cmd("hyprlock"))
-hl.bind(mainMod .. " + SUPER_L", hl.dsp.exec_cmd("pkill rofi || rofi -show drun -show-icons"), { release = true }) -- open on first, closes on second
-hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/pinnedMenu.sh"))
+-- ------- --
+hl.bind(super .. " + ESCAPE", hl.dsp.exec_cmd("hyprlock"))
+hl.bind(super .. " + SUPER_L", hl.dsp.exec_cmd("pkill rofi || rofi -show drun -show-icons"), { release = true }) -- open on first, closes on second
+hl.bind(super .. " + SPACE", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/pinnedMenu.sh"))
 
 -- Screenshot (dedicated keyboard PrtSc)
 hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m output -o $HOME/images/screenshots/$(date +%Y-%m)")) -- 2 entries, other is 'mainmod .. " + S"'
@@ -397,18 +401,18 @@ hl.bind("SHIFT + PRINT", hl.dsp.exec_cmd("hyprshot -m region -o $HOME/images/scr
 hl.bind("CTRL + PRINT", hl.dsp.exec_cmd("hyprshot -m window -o $HOME/images/screenshots/$(date +%Y-%m)")) -- 2 entries, other is 'mainmod .. " + CTRL + S"'
 
 -- Move focus
-hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
+hl.bind(super .. " + left",  hl.dsp.focus({ direction = "left" }))
+hl.bind(super .. " + right", hl.dsp.focus({ direction = "right" }))
+hl.bind(super .. " + up",    hl.dsp.focus({ direction = "up" }))
+hl.bind(super .. " + down",  hl.dsp.focus({ direction = "down" }))
 
 -- Scroll through existing workspaces with mainMod + scroll
-hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
-hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
+hl.bind(super .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(super .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 
 -- Move/resize windows with mainMod + LMB/RMB and dragging
-hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
-hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+hl.bind(super .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
+hl.bind(super .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Laptop multimedia keys for volume and LCD brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
@@ -424,35 +428,3 @@ hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = tr
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true }) -- 2 entries, other is 'mainmod .. " + A"'
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true }) -- 2 entries, other is 'mainmod .. " + A"'
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
-
-
-
-----------------------
----- WINDOW RULES ----
-----------------------
-
--- TODO: Commented for now, figure out if it can be deleted
-
---local suppressMaximizeRule = hl.window_rule({
---    -- Ignore maximize requests from all apps. TAKEN FROM DEFAULT CONFIG
---    name  = "suppress-maximize-events",
---    match = { class = ".*" },
---
---    suppress_event = "maximize"
---})
---suppressMaximizeRule:set_enabled(false)
-
---hl.window_rule({
---    -- Fix some dragging issues with XWayland
---    name  = "fix-xwayland-drags",
---    match = {
---        class      = "^$",
---        title      = "^$",
---        xwayland   = true,
---        float      = true,
---        fullscreen = false,
---        pin        = false,
---    },
---
---    no_focus = true
---})
